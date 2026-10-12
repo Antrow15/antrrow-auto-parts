@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import Icon from './Icon.astro';
+import { nav, site } from '@/data/site';
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const h = href.replace(/\/$/, '') || '/';
+  return h === '/' ? current === '/' : current === h || current.startsWith(`${h}/`);
+};
+---
+
+<div class="hidden bg-brand-navy-900 text-sm text-white/80 md:block" style="view-transition-name: topbar">
+  <div class="container-site flex h-10 items-center justify-between">
+    <p class="flex items-center gap-2">
+      <Icon name="pin" class="size-4 text-brand-red" />
+      {site.address.locality}, {site.address.city} - {site.address.postalCode}
+    </p>
+    <div class="flex items-center gap-6">
+      <a href={`tel:${site.phones.mobile.tel}`} class="flex items-center gap-2 hover:text-white">
+        <Icon name="phone" class="size-4 text-brand-red" />
+        {site.phones.mobile.display}
+      </a>
+      <a href={`mailto:${site.email}`} class="flex items-center gap-2 hover:text-white">
+        <Icon name="mail" class="size-4 text-brand-red" />
+        {site.email}
+      </a>
+    </div>
+  </div>
+</div>
+
+<header data-site-header class="sticky top-0 z-40 border-b border-steel-100 bg-white/90 backdrop-blur-md">
+  <div class="container-site flex h-18 items-center justify-between gap-4">
+    <a href="/" class="group flex items-center gap-3" aria-label={`${site.name} - home`}>
+      <Image src={logo} alt="" width={48} height={48} class="size-12 object-contain transition-transform duration-700 ease-(--ease-out-expo) group-hover:rotate-[30deg]" loading="eager" />
+      <span class="leading-tight">
+        <span class="block font-display text-xl font-bold tracking-wide text-brand-navy-900 uppercase">
+          Antrrow <span class="text-brand-red">Auto Parts</span>
+        </span>
+        <span class="hidden text-xs text-steel-500 sm:block xl:hidden 2xl:block">{site.tagline}</span>
+      </span>
+    </a>
+
+    <nav aria-label="Main" class="hidden xl:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'relative rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors duration-300',
+                  'after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:origin-left after:rounded-full after:bg-brand-red after:transition-transform after:duration-300 after:ease-(--ease-out-expo)',
+                  isActive(item.href)
+                    ? 'text-brand-red after:scale-x-100'
+                    : 'text-steel-700 after:scale-x-0 hover:text-brand-navy hover:after:scale-x-100',
+                ]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/request-a-quote/" class="btn-primary hidden px-4 py-2.5 text-sm whitespace-nowrap sm:inline-flex">
+        Request a Quote
+      </a>
+      <button
+        type="button"
+        class="inline-flex size-11 items-center justify-center rounded-md text-brand-navy hover:bg-steel-50 xl:hidden"
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        data-nav-toggle
+      >
+        <span class="sr-only">Open menu</span>
+        <Icon name="menu" class="size-7" />
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Mobile" class="hidden border-t border-steel-100 bg-white xl:hidden" data-nav-panel>
+    <ul class="container-site flex flex-col py-3">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'block rounded-md px-3 py-3 font-medium',
+                isActive(item.href) ? 'text-brand-red' : 'text-steel-900 hover:bg-steel-50',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-2">
+        <a href="/request-a-quote/" class="btn-primary w-full">Request a Quote</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-nav-panel]');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    panel?.classList.toggle('hidden', open);
+  });
+</script>

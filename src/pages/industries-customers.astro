@@ -1,0 +1,115 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Icon from '@/components/Icon.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import hero from '@/assets/images/prod-levers.jpg';
+import { customers } from '@/data/site';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Industries & Customers', href: '/industries-customers/' },
+];
+
+const industries = [
+  {
+    title: 'Automotive driveline & clutch',
+    text: 'Clutch pins, bushes, pads, brackets and 3-finger / 4-finger levers for clutch and driveline component makers.',
+    links: [
+      { label: 'Pins & dowels', href: '/products/pins-dowels/' },
+      { label: 'Levers', href: '/products/levers/' },
+    ],
+  },
+  {
+    title: 'Two-wheeler supply chain',
+    text: 'Machined child parts produced to drawings supplied by fabricators serving the two-wheeler industry.',
+    links: [{ label: 'Two-wheeler child parts', href: '/products/two-wheeler-child-parts/' }],
+  },
+  {
+    title: 'Mining & heavy equipment',
+    text: 'Piston rods and piston-rod blanks turned and centreless ground to customer specification.',
+    links: [{ label: 'Piston rods', href: '/products/piston-rods/' }],
+  },
+  {
+    title: 'General industrial & fabrication',
+    text: 'Weight-balancing rods, special bolts, rollers, spacers and custom turned parts for industrial customers.',
+    links: [
+      { label: 'Rods & shafts', href: '/products/rods-shafts/' },
+      { label: 'Bolts & threaded parts', href: '/products/bolts-threaded-parts/' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Industries & Customers - Automotive & Industrial Components"
+  description="Antrrow Auto Parts makes components for automotive driveline, clutch, two-wheeler, mining and industrial supply chains, made to customer-approved drawings in Chennai."
+  keywords={['automotive components supplier Chennai', 'clutch component manufacturer', 'industrial machined components']}
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader
+    eyebrow="Industries & customers"
+    title="Components for Automotive and Industrial Supply Chains"
+    lead="We manufacture components against customer-approved drawings and specifications for industrial and automotive supply chains."
+    breadcrumbs={breadcrumbs}
+    image={hero}
+  />
+
+  <section class="py-16 md:py-24">
+    <div class="container-site">
+      <p class="eyebrow">Industries</p>
+      <h2 class="mt-3 text-4xl md:text-5xl">Industries we serve</h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-2" data-stagger>
+        {industries.map((ind) => (
+          <article class="h-full rounded-xl border border-steel-200 p-7 transition-all duration-500 ease-(--ease-out-expo) hover:-translate-y-1 hover:shadow-xl">
+            <h3 class="text-2xl">{ind.title}</h3>
+            <p class="mt-3 text-steel-700">{ind.text}</p>
+            <ul class="mt-5 flex flex-wrap gap-3">
+              {ind.links.map((l) => (
+                <li>
+                  <a href={l.href} class="inline-flex items-center gap-1.5 rounded-full bg-steel-50 px-4 py-1.5 text-sm font-medium text-brand-navy hover:bg-brand-navy hover:text-white">
+                    {l.label} <Icon name="arrow" class="size-3.5" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-steel-50 py-16 md:py-24">
+    <div class="container-site">
+      <p class="eyebrow">Customer work</p>
+      <h2 class="mt-3 text-4xl md:text-5xl">Customers and the components we make for them</h2>
+      <div class="mt-10 overflow-x-auto rounded-xl border border-steel-200 bg-white">
+        <table class="w-full min-w-xl text-left">
+          <caption class="sr-only">Customers and component categories</caption>
+          <thead class="bg-brand-navy-900 text-sm text-white">
+            <tr>
+              <th scope="col" class="px-6 py-4 font-semibold">Customer</th>
+              <th scope="col" class="px-6 py-4 font-semibold">Sector</th>
+              <th scope="col" class="px-6 py-4 font-semibold">Components</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-steel-200">
+            {customers.map((c) => (
+              <tr>
+                <th scope="row" class="px-6 py-4 font-semibold text-steel-900">{c.name}</th>
+                <td class="px-6 py-4 text-sm text-steel-700">{c.sector}</td>
+                <td class="px-6 py-4 text-sm text-steel-700">{c.parts.join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 max-w-3xl text-sm text-steel-500">
+        Components are made to our customers' drawings for their supply chains. Antrrow Auto Parts does not sell branded
+        genuine parts and does not claim a direct relationship with any vehicle manufacturer.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

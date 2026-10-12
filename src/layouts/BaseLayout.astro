@@ -1,0 +1,110 @@
+---
+import '@/styles/global.css';
+import SEO from '@/components/seo/SEO.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/data/site';
+import {
+  breadcrumbSchema,
+  graph,
+  organizationSchema,
+  webPageSchema,
+  websiteSchema,
+} from '@/lib/schema';
+import type { Crumb } from '@/components/Breadcrumbs.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string | undefined;
+  imageAlt?: string | undefined;
+  keywords?: readonly string[] | undefined;
+  noindex?: boolean;
+  breadcrumbs?: Crumb[] | undefined;
+  pageType?: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image,
+  imageAlt,
+  keywords,
+  noindex = false,
+  breadcrumbs,
+  pageType = 'WebPage',
+  schema = [],
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const jsonLd = noindex
+  ? undefined
+  : graph(
+      organizationSchema('/icon-512.png'),
+      websiteSchema(),
+      webPageSchema({ path, title, description, type: pageType }),
+      ...(breadcrumbs && breadcrumbs.length > 1 ? [breadcrumbSchema(breadcrumbs)] : []),
+      ...schema,
+    );
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="format-detection" content="telephone=no" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      imageAlt={imageAlt}
+      keywords={keywords}
+      noindex={noindex}
+      jsonLd={jsonLd}
+    />
+  </head>
+  <body class="flex min-h-screen flex-col pb-16 md:pb-0">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-brand-navy focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <div
+      class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-steel-200 bg-white text-xs font-semibold md:hidden"
+      style="view-transition-name: mobile-bar"
+    >
+      <a href={`tel:${site.phones.mobile.tel}`} class="flex flex-col items-center gap-1 py-2.5 text-brand-navy">
+        <Icon name="phone" class="size-5" />
+        Call
+      </a>
+      <a
+        href={`https://wa.me/${site.whatsapp}`}
+        target="_blank"
+        rel="noopener"
+        class="flex flex-col items-center gap-1 py-2.5 text-[#128C7E]"
+      >
+        <Icon name="whatsapp" class="size-5" />
+        WhatsApp
+      </a>
+      <a href="/request-a-quote/" class="flex flex-col items-center gap-1 bg-brand-red py-2.5 text-white">
+        <Icon name="drawing" class="size-5" />
+        Get Quote
+      </a>
+    </div>
+    <script>
+      import '@/scripts/motion';
+    </script>
+  </body>
+</html>

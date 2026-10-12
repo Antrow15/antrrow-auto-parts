@@ -1,0 +1,309 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource/barlow-condensed/600.css';
+@import '@fontsource/barlow-condensed/700.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Inter Variable', ui-sans-serif, sans-serif;
+
+  --color-brand-red: #ed1c24;
+  --color-brand-red-600: #d0141b;
+  --color-brand-red-700: #a80f15;
+  --color-brand-navy: #2e3192;
+  --color-brand-navy-700: #23266f;
+  --color-brand-navy-900: #14163f;
+  --color-steel-50: #f5f6f8;
+  --color-steel-100: #e9ebf0;
+  --color-steel-200: #d3d7e0;
+  --color-steel-500: #6b7385;
+  --color-steel-700: #3d4354;
+  --color-steel-900: #161925;
+
+  --container-site: 80rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth cross-page transitions (native, no JS router) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 220ms var(--ease-out-expo) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 420ms var(--ease-out-expo) both;
+}
+::view-transition-group(site-header),
+::view-transition-group(topbar),
+::view-transition-group(mobile-bar) {
+  animation: none;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes gear-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-20deg);
+  }
+}
+
+@utility btn {
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-5 py-3 font-semibold transition-all duration-300 ease-(--ease-out-expo) hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 active:translate-y-0 active:scale-[0.98];
+}
+
+/* Light sweep across the button on hover. */
+@utility btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    animation: shimmer 800ms var(--ease-out-expo);
+  }
+}
+
+@utility btn-primary {
+  @apply btn btn-shine bg-brand-red text-white shadow-lg shadow-brand-red/20 hover:bg-brand-red-600 hover:shadow-xl hover:shadow-brand-red/30;
+}
+
+@utility btn-secondary {
+  @apply btn bg-brand-navy text-white hover:bg-brand-navy-700;
+}
+
+@utility btn-outline {
+  @apply btn border border-current text-brand-navy hover:bg-brand-navy hover:text-white;
+}
+
+@utility btn-ghost-light {
+  @apply btn border border-white/40 text-white hover:bg-white hover:text-brand-navy-900;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white font-sans text-steel-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-bold tracking-tight text-brand-navy-900;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-red;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* Load-time entrance for hero content: CSS only, so it runs before any JS. */
+.hero-enter > * {
+  animation: fade-up 900ms var(--ease-out-expo) both;
+}
+.hero-enter > :nth-child(1) { animation-delay: 80ms; }
+.hero-enter > :nth-child(2) { animation-delay: 200ms; }
+.hero-enter > :nth-child(3) { animation-delay: 320ms; }
+.hero-enter > :nth-child(4) { animation-delay: 440ms; }
+.hero-enter > :nth-child(5) { animation-delay: 560ms; }
+.hero-enter > :nth-child(6) { animation-delay: 680ms; }
+
+.ken-burns {
+  animation: ken-burns 14s var(--ease-out-expo) both;
+}
+
+/* Scroll reveal. Hidden only when JS is running (html.js), so content is always visible without it. */
+.js [data-reveal],
+.js [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 800ms var(--ease-out-expo),
+    transform 800ms var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.js [data-reveal='left'] {
+  transform: translateX(-40px);
+}
+.js [data-reveal='right'] {
+  transform: translateX(40px);
+}
+.js [data-reveal='zoom'] {
+  transform: scale(0.94);
+}
+.js [data-reveal].is-visible,
+.js [data-stagger] > .is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Header gains a shadow once the page is scrolled. */
+[data-site-header] {
+  view-transition-name: site-header;
+  transition:
+    box-shadow 300ms ease,
+    background-color 300ms ease;
+}
+[data-site-header][data-scrolled] {
+  box-shadow: 0 8px 30px -12px rgb(20 22 63 / 0.25);
+}
+
+/* Animated <details> open/close where supported (falls back to instant toggle). */
+:root {
+  interpolate-size: allow-keywords;
+}
+.faq-item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    block-size 450ms var(--ease-out-expo),
+    opacity 350ms ease,
+    content-visibility 450ms allow-discrete;
+}
+.faq-item[open]::details-content {
+  block-size: auto;
+  opacity: 1;
+}
+
+.gear-spin {
+  animation: gear-spin 40s linear infinite;
+}
+
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-(--container-site) px-4 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-display text-sm font-semibold tracking-[0.18em] text-brand-red uppercase;
+  }
+
+  .eyebrow::before {
+    content: '';
+    @apply inline-block h-0.5 w-8 bg-brand-red;
+  }
+
+  .prose-site {
+    @apply max-w-none text-steel-700 leading-relaxed;
+  }
+  .prose-site h2 {
+    @apply mt-10 mb-4 text-3xl;
+  }
+  .prose-site h3 {
+    @apply mt-8 mb-3 text-2xl;
+  }
+  .prose-site p {
+    @apply mb-4;
+  }
+  .prose-site ul {
+    @apply mb-6 list-disc space-y-2 pl-6 marker:text-brand-red;
+  }
+  .prose-site ol {
+    @apply mb-6 list-decimal space-y-2 pl-6 marker:text-brand-red;
+  }
+  .prose-site strong {
+    @apply text-steel-900;
+  }
+  .prose-site a {
+    @apply font-medium text-brand-navy underline decoration-brand-red/40 underline-offset-4 hover:decoration-brand-red;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-steel-900;
+  }
+  .field-input {
+    @apply block w-full rounded-md border border-steel-200 bg-white px-3.5 py-2.5 text-steel-900 placeholder:text-steel-500 focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/20 focus:outline-none aria-invalid:border-brand-red aria-invalid:ring-brand-red/20;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm font-medium text-brand-red-700;
+  }
+
+  .gear-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.07) 1px, transparent 0);
+    background-size: 22px 22px;
+    pointer-events: none;
+  }
+}

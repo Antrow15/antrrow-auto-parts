@@ -1,0 +1,86 @@
+---
+interface Props {
+  name: string;
+  label: string;
+  formId: string;
+  as?: 'input' | 'textarea' | 'select';
+  type?: 'text' | 'email' | 'tel' | 'number' | 'date';
+  required?: boolean;
+  placeholder?: string;
+  autocomplete?: string;
+  options?: readonly string[];
+  hint?: string;
+  rows?: number;
+  minlength?: number;
+  maxlength?: number;
+  inputmode?: 'text' | 'email' | 'tel' | 'numeric';
+  class?: string;
+}
+
+const {
+  name,
+  label,
+  formId,
+  as = 'input',
+  type = 'text',
+  required = false,
+  placeholder,
+  autocomplete,
+  options = [],
+  hint,
+  rows = 4,
+  minlength,
+  maxlength,
+  inputmode,
+  class: className,
+} = Astro.props;
+
+const id = `${formId}-${name}`;
+const describedBy = [hint ? `${id}-hint` : null, `${id}-error`].filter(Boolean).join(' ');
+---
+
+<div class={className}>
+  <label for={id} class="field-label">
+    {label}
+    {required ? <span class="text-brand-red" aria-hidden="true"> *</span> : <span class="font-normal text-steel-500"> (optional)</span>}
+  </label>
+  {
+    as === 'textarea' ? (
+      <textarea
+        id={id}
+        name={name}
+        rows={rows}
+        required={required}
+        placeholder={placeholder}
+        minlength={minlength}
+        maxlength={maxlength}
+        data-label={label}
+        aria-describedby={describedBy}
+        class="field-input"
+      />
+    ) : as === 'select' ? (
+      <select id={id} name={name} required={required} data-label={label} aria-describedby={describedBy} class="field-input">
+        <option value="">Select…</option>
+        {options.map((o) => (
+          <option value={o}>{o}</option>
+        ))}
+      </select>
+    ) : (
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        autocomplete={autocomplete}
+        maxlength={maxlength}
+        inputmode={inputmode}
+        data-label={label}
+        aria-describedby={describedBy}
+        class="field-input"
+      />
+    )
+  }
+  {hint && <p id={`${id}-hint`} class="mt-1.5 text-xs text-steel-500">{hint}</p>}
+  <p id={`${id}-error`} class="field-error" data-error-for={name} hidden></p>
+</div>

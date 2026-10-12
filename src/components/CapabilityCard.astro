@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  capability: CollectionEntry<'capabilities'>;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { capability, headingLevel = 'h3' } = Astro.props;
+const { data } = capability;
+const Heading = headingLevel;
+---
+
+<article class="group relative isolate flex h-full min-h-80 flex-col justify-end overflow-hidden rounded-xl bg-brand-navy-900 transition-all duration-500 ease-(--ease-out-expo) hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-navy/30">
+  <Image
+    src={data.image}
+    alt=""
+    widths={[400, 640, 800]}
+    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+    class="absolute inset-0 -z-20 size-full object-cover opacity-60 transition-all duration-700 ease-(--ease-out-expo) group-hover:scale-110 group-hover:opacity-75"
+  />
+  <div class="absolute inset-0 -z-10 bg-linear-to-t from-brand-navy-900 via-brand-navy-900/70 to-transparent"></div>
+  <div class="p-6">
+    <p class="text-xs font-semibold tracking-widest text-brand-red uppercase">{data.machine}</p>
+    <Heading class="mt-1 text-2xl text-white">
+      <a href={`/capabilities/${capability.id}/`} class="after:absolute after:inset-0">{data.title}</a>
+    </Heading>
+    <p class="mt-2 text-sm leading-relaxed text-white/80">{data.summary}</p>
+    <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white">
+      Learn more <Icon name="arrow" class="size-4 transition-transform group-hover:translate-x-1" />
+    </span>
+  </div>
+</article>

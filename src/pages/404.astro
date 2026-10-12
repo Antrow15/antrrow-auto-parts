@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+---
+
+<BaseLayout title="Page not found" description="The page you are looking for could not be found." noindex>
+  <section class="py-24 md:py-32">
+    <div class="container-site max-w-2xl text-center">
+      <p class="font-display text-8xl font-bold text-brand-red">404</p>
+      <h1 class="mt-4 text-4xl">This part isn't in our catalogue</h1>
+      <p class="mt-4 text-steel-700">The page you are looking for may have moved. Try one of these instead.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="/" class="btn-primary">Go to home <Icon name="arrow" class="size-4" /></a>
+        <a href="/products/" class="btn-outline">Products</a>
+        <a href="/capabilities/" class="btn-outline">Capabilities</a>
+        <a href="/request-a-quote/" class="btn-outline">Request a Quote</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  breadcrumbs: Crumb[];
+  image?: ImageMetadata;
+  imageAlt?: string;
+}
+
+const { eyebrow, title, lead, breadcrumbs, image, imageAlt = '' } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden bg-brand-navy-900 text-white">
+  {
+    image && (
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[640, 1024, 1600]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="ken-burns absolute inset-0 -z-20 size-full object-cover opacity-35"
+      />
+    )
+  }
+  <div class="gear-bg absolute inset-0 -z-10 bg-linear-to-r from-brand-navy-900 via-brand-navy-900/90 to-brand-navy-900/40"></div>
+  <Icon name="cog" class="gear-spin pointer-events-none absolute -right-32 -bottom-40 -z-10 size-[30rem] text-white/[0.04]" />
+  <div class="hero-enter container-site py-14 md:py-20">
+    <Breadcrumbs items={breadcrumbs} light />
+    {eyebrow && <p class="eyebrow mt-6">{eyebrow}</p>}
+    <h1 class="mt-3 max-w-4xl text-4xl leading-tight text-white md:text-5xl lg:text-6xl">{title}</h1>
+    {lead && <p class="mt-5 max-w-2xl text-lg text-white/80">{lead}</p>}
+    <slot />
+  </div>
+</section>

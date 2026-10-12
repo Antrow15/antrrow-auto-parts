@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Icon from '@/components/Icon.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import hero from '@/assets/images/cap-cnc-turning.jpg';
+import { faqSchema, itemListSchema } from '@/lib/schema';
+
+const capabilities = (await getCollection('capabilities')).sort((a, b) => a.data.order - b.data.order);
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Capabilities', href: '/capabilities/' },
+];
+
+const faqs = [
+  {
+    q: 'Which machines do you have?',
+    a: 'Our workshop has an ACE CNC lathe, a Trishul polygon milling machine, a Bhavans Sons centreless grinder, a Laxon cutting machine and an HMT pillar drilling machine.',
+  },
+  {
+    q: 'Can one part go through several processes?',
+    a: 'Yes. A typical route is stock cutting, CNC turning, polygon milling or drilling, then centreless grinding, inspection and packing - all in our Padi, Chennai workshop.',
+  },
+  {
+    q: 'Do you outsource any processes?',
+    a: 'Our in-house processes are listed on this page. If your part needs heat treatment, plating or another process, mention it in your enquiry and we will discuss the options.',
+  },
+];
+---
+
+<BaseLayout
+  title="Capabilities - CNC Turning, Polygon Milling & Grinding"
+  description="In-house CNC turning, polygon milling, centreless grinding, bar stock cutting and pillar drilling in Padi, Chennai. One workshop from bar stock to finished component."
+  keywords={['CNC turning Chennai', 'polygon milling Chennai', 'centreless grinding Chennai', 'machining services Padi']}
+  breadcrumbs={breadcrumbs}
+  pageType="CollectionPage"
+  schema={[
+    itemListSchema('Manufacturing capabilities', capabilities.map((c) => ({ name: c.data.title, href: `/capabilities/${c.id}/` }))),
+    faqSchema(faqs),
+  ]}
+>
+  <PageHeader
+    eyebrow="Manufacturing capabilities"
+    title="CNC Turning, Polygon Milling & Centreless Grinding Works"
+    lead="Five in-house processes take bar stock to a finished, inspected component - available according to part geometry, machine capability and approved requirements."
+    breadcrumbs={breadcrumbs}
+    image={hero}
+  />
+
+  <section class="py-16 md:py-24">
+    <div class="container-site space-y-16 md:space-y-24">
+      {capabilities.map((c, i) => (
+        <article data-reveal class="grid items-center gap-10 lg:grid-cols-2">
+          <Image
+            src={c.data.image}
+            alt={c.data.imageAlt}
+            widths={[480, 800, 1024]}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            class:list={['aspect-4/3 w-full rounded-2xl object-cover shadow-lg', i % 2 === 1 && 'lg:order-2']}
+          />
+          <div>
+            <p class="text-xs font-semibold tracking-widest text-brand-red uppercase">{c.data.machine}</p>
+            <h2 class="mt-2 text-4xl">
+              <a href={`/capabilities/${c.id}/`} class="hover:text-brand-red">{c.data.title}</a>
+            </h2>
+            <p class="mt-4 text-steel-700">{c.data.summary}</p>
+            <ul class="mt-6 grid gap-2 sm:grid-cols-2">
+              {c.data.applications.slice(0, 6).map((a) => (
+                <li class="flex gap-2 text-sm text-steel-700"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-brand-red" />{a}</li>
+              ))}
+            </ul>
+            <a href={`/capabilities/${c.id}/`} class="btn-secondary mt-8">
+              {c.data.title} details <Icon name="arrow" class="size-4" />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <Faq faqs={faqs} title="Questions about our capabilities" />
+  <CtaBand />
+</BaseLayout>

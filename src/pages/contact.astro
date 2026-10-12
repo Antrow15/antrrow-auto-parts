@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Icon from '@/components/Icon.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import hero from '@/assets/images/hero-cnc-workshop.jpg';
+import { site, fullAddress } from '@/data/site';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Contact', href: '/contact/' },
+];
+---
+
+<BaseLayout
+  title="Contact Antrrow Auto Parts - Padi, Chennai 600050"
+  description="Contact Antrrow Auto Parts, No. 2 Kamaraj Street, Gopal Naicker Nagar, Padi, Chennai 600050. Call +91 98844 49689 or email antrrowautoparts@gmail.com."
+  keywords={['Antrrow Auto Parts contact', 'machining Padi Chennai', 'CNC turning near Padi']}
+  breadcrumbs={breadcrumbs}
+  pageType="ContactPage"
+>
+  <PageHeader
+    eyebrow="Contact"
+    title="Contact Antrrow Auto Parts in Padi, Chennai"
+    lead="Call, WhatsApp, email or visit our workshop to discuss a component requirement."
+    breadcrumbs={breadcrumbs}
+    image={hero}
+  />
+
+  <section class="py-16 md:py-20">
+    <div class="container-site grid gap-12 lg:grid-cols-5" data-stagger="150">
+      <div class="space-y-6 lg:col-span-2">
+        <div class="rounded-xl border border-steel-200 p-6">
+          <h2 class="text-2xl">{site.generalManager.name}</h2>
+          <p class="text-sm font-semibold text-brand-red">{site.generalManager.role}</p>
+          <address class="mt-5 space-y-4 not-italic text-steel-700">
+            <p class="flex gap-3"><Icon name="pin" class="mt-0.5 size-5 shrink-0 text-brand-red" /><span>{fullAddress}</span></p>
+            <p class="flex gap-3">
+              <Icon name="phone" class="mt-0.5 size-5 shrink-0 text-brand-red" />
+              <span>
+                Mobile: <a href={`tel:${site.phones.mobile.tel}`} class="font-semibold text-brand-navy">{site.phones.mobile.display}</a><br />
+                Landline: <a href={`tel:${site.phones.landline.tel}`} class="font-semibold text-brand-navy">{site.phones.landline.display}</a>
+              </span>
+            </p>
+            <p class="flex gap-3"><Icon name="mail" class="mt-0.5 size-5 shrink-0 text-brand-red" /><a href={`mailto:${site.email}`} class="break-all font-semibold text-brand-navy">{site.email}</a></p>
+            <p class="flex gap-3"><Icon name="clock" class="mt-0.5 size-5 shrink-0 text-brand-red" /><span>{site.hours.display}</span></p>
+          </address>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener" class="btn bg-[#25D366] text-white hover:bg-[#1da851]"><Icon name="whatsapp" class="size-5" />WhatsApp</a>
+            <a href={site.mapsUrl} target="_blank" rel="noopener" class="btn-outline"><Icon name="pin" class="size-5" />Directions</a>
+          </div>
+        </div>
+        <div class="rounded-xl border border-steel-200 p-6 text-sm text-steel-700">
+          <p><span class="font-semibold text-steel-900">GSTIN:</span> {site.gstin}</p>
+          <p class="mt-1"><span class="font-semibold text-steel-900">Registration:</span> MSME</p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-steel-200 bg-white p-6 shadow-sm md:p-8 lg:col-span-3">
+        <h2 class="text-3xl">Send us a message</h2>
+        <p class="mt-2 text-steel-700">
+          For detailed requirements, use the <a href="/request-a-quote/" class="font-semibold text-brand-navy underline">Request a Quote</a> form.
+        </p>
+        <div class="mt-8"><EnquiryForm id="contact-enquiry" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Map" class="h-96 w-full bg-steel-100">
+    <iframe
+      title="Map showing Antrrow Auto Parts, Padi, Chennai"
+      src={site.mapsEmbed}
+      class="size-full border-0"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen></iframe>
+  </section>
+</BaseLayout>

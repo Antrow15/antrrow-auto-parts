@@ -1,0 +1,52 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { site, fullAddress } from '@/data/site';
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Privacy Notice', href: '/privacy/' },
+];
+---
+
+<BaseLayout
+  title="Privacy Notice"
+  description="How Antrrow Auto Parts uses the contact and enquiry details you share through this website."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader title="Privacy Notice" breadcrumbs={breadcrumbs} />
+
+  <section class="py-16">
+    <div class="container-site prose-site max-w-3xl">
+      <p>
+        This notice explains how {site.name} ("we") uses information you share with us through this website.
+      </p>
+      <h2>What we collect</h2>
+      <p>
+        When you use our enquiry or quotation forms, we ask for your name, company, email and/or phone number, and
+        details of your component requirement. We only ask for information needed to respond to your enquiry.
+      </p>
+      <h2>How the forms work</h2>
+      <p>
+        The forms on this website do not store your details on a server. When you submit a form, your message is
+        prepared in your own email or WhatsApp app, and is sent to us only when you choose to send it.
+      </p>
+      <h2>How we use your information</h2>
+      <ul>
+        <li>To review your requirement and prepare a quotation</li>
+        <li>To contact you about your enquiry or order</li>
+      </ul>
+      <p>We do not sell your information or use it for unrelated marketing.</p>
+      <h2>Drawings and technical data</h2>
+      <p>
+        Drawings and specifications you share are used only to assess and manufacture your components, and are not
+        published or shared with third parties without your permission.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        For any privacy question, contact {site.generalManager.name}, {site.generalManager.role}, at{' '}
+        <a href={`mailto:${site.email}`}>{site.email}</a> or write to us at {fullAddress}.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

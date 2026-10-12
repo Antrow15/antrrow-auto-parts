@@ -1,0 +1,273 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import CapabilityCard from '@/components/CapabilityCard.astro';
+import ProcessTimeline from '@/components/ProcessTimeline.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import hero from '@/assets/images/hero-cnc-workshop.jpg';
+import inspection from '@/assets/images/quality-inspection.jpg';
+import { site, customers } from '@/data/site';
+import { faqSchema, itemListSchema } from '@/lib/schema';
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const capabilities = (await getCollection('capabilities')).sort((a, b) => a.data.order - b.data.order);
+
+const faqs = [
+  {
+    q: 'What does Antrrow Auto Parts manufacture?',
+    a: 'We manufacture custom metal components to customer drawings - including clutch pins, bushes, sleeves, rods, shafts, levers, brackets, pads, special bolts, rollers and piston rods - for automotive and industrial supply chains.',
+  },
+  {
+    q: 'Where is Antrrow Auto Parts located?',
+    a: `Our workshop is at ${site.address.street}, ${site.address.locality}, ${site.address.city} - ${site.address.postalCode}, Tamil Nadu.`,
+  },
+  {
+    q: 'Which machining processes do you have in-house?',
+    a: 'CNC turning, polygon milling, centreless grinding, bar and bundle stock cutting, and pillar drilling.',
+  },
+  {
+    q: 'Do you work from drawings or samples?',
+    a: 'Both. Share your drawing, sample or specification with the material and quantity, and we will review manufacturability before quoting.',
+  },
+  {
+    q: 'Do you take small batches and prototypes?',
+    a: 'Yes. We handle samples, prototypes and repeat batches. Pricing for small quantities reflects the setup needed for the part.',
+  },
+  {
+    q: 'How do I request a quotation?',
+    a: `Use the Request a Quote form, email ${site.email}, or call ${site.phones.mobile.display}.`,
+  },
+];
+
+const stats = [
+  { count: site.experienceYears, suffix: '+', label: 'Years of machining experience' },
+  { count: capabilities.length, suffix: '', label: 'In-house machining processes' },
+  { count: products.length, suffix: '', label: 'Component families' },
+  { count: site.workforce, suffix: '', label: 'Skilled team members' },
+];
+
+const reasons = [
+  { icon: 'drawing', title: 'Built to your drawing', text: 'Every component is made against your approved drawing, sample and material specification.' },
+  { icon: 'cog', title: 'Multiple processes, one workshop', text: 'Cutting, CNC turning, polygon milling, drilling and centreless grinding under one roof in Padi.' },
+  { icon: 'shield', title: 'Honest feasibility review', text: 'We review every requirement before quoting and tell you clearly what suits our setup.' },
+  { icon: 'truck', title: 'Samples to repeat batches', text: 'From one-off samples and prototypes to planned repeat batches with protective packing.' },
+] as const;
+---
+
+<BaseLayout
+  title="Antrrow Auto Parts | CNC Turned Components Manufacturer in Chennai"
+  description="CNC turned components, polygon milling and centreless grinding in Padi, Chennai. Clutch pins, bushes, shafts, levers and custom parts made to your drawing."
+  keywords={[
+    'CNC turned components manufacturer Chennai',
+    'polygon milling Chennai',
+    'centreless grinding Padi',
+    'clutch pins and bushes manufacturer',
+    'custom machined parts Chennai',
+  ]}
+  schema={[
+    faqSchema(faqs),
+    itemListSchema(
+      'Component families',
+      products.map((p) => ({ name: p.data.title, href: `/products/${p.id}/` })),
+    ),
+  ]}
+>
+  <section class="relative isolate overflow-hidden bg-brand-navy-900">
+    <Image
+      src={hero}
+      alt="CNC lathe turning a steel shaft beside trays of finished turned pins and bushes"
+      widths={[640, 1024, 1600, 1920]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="ken-burns absolute inset-0 -z-20 size-full object-cover"
+    />
+    <div class="gear-bg absolute inset-0 -z-10 bg-linear-to-r from-brand-navy-900 via-brand-navy-900/85 to-brand-navy-900/20"></div>
+    <div class="container-site py-20 md:py-28 lg:py-36">
+      <div class="hero-enter max-w-3xl">
+        <h1 class="text-white">
+          <span class="eyebrow">CNC Turned Components Manufacturer in Chennai</span>
+          <span class="mt-4 block text-5xl leading-[1.05] md:text-6xl lg:text-7xl">
+            Custom-Machined Components.{' '}
+            <span class="text-brand-red">Built to Your Drawing.</span>
+          </span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg text-white/85">
+          {site.name} provides machining and component manufacturing services in Padi, Chennai, supporting
+          customer-specific requirements across automotive and industrial applications. Share your drawing,
+          sample or specification for a manufacturing feasibility review and quotation.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/request-a-quote/" class="btn-primary px-6 py-3.5">
+            Request a Quotation <Icon name="arrow" class="size-4" />
+          </a>
+          <a href="/contact/" class="btn-ghost-light px-6 py-3.5">Discuss a Component Requirement</a>
+        </div>
+        <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
+          {['CNC Turning', 'Polygon Milling', 'Centreless Grinding', 'Stock Cutting', 'Drilling'].map((t) => (
+            <li class="flex items-center gap-2"><Icon name="check" class="size-4 text-brand-red" />{t}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Key facts" class="border-b border-steel-100 bg-white">
+    <dl class="container-site grid grid-cols-2 divide-steel-100 py-10 md:grid-cols-4 md:divide-x" data-stagger="100">
+      {stats.map((s) => (
+        <div class="flex flex-col-reverse px-4 py-3 text-center">
+          <dt class="mt-1 text-sm text-steel-500">{s.label}</dt>
+          <dd class="font-display text-5xl font-bold text-brand-navy tabular-nums" data-count={s.count} data-suffix={s.suffix}>{s.count}{s.suffix}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="py-16 md:py-24">
+    <div class="container-site">
+      <div data-reveal class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Manufacturing capabilities</p>
+          <h2 class="mt-3 text-4xl md:text-5xl">CNC turning, polygon milling &amp; centreless grinding in Padi, Chennai</h2>
+          <p class="mt-4 text-steel-700">
+            Five in-house processes let us take a bar from stock cutting to a finished, inspected component - available
+            according to part geometry, machine capability and approved requirements.
+          </p>
+        </div>
+        <a href="/capabilities/" class="btn-outline shrink-0">All capabilities</a>
+      </div>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {capabilities.map((c) => <CapabilityCard capability={c} />)}
+        <a href="/request-a-quote/" class="group flex min-h-80 flex-col justify-center rounded-xl border-2 border-dashed border-brand-red/40 p-8 text-center transition-all duration-500 hover:border-brand-red hover:bg-brand-red/5">
+          <Icon name="drawing" class="mx-auto size-10 text-brand-red transition-transform duration-500 group-hover:-translate-y-1 group-hover:scale-110" />
+          <span class="mt-4 font-display text-2xl font-bold text-brand-navy-900">Not sure which process?</span>
+          <span class="mt-2 text-sm text-steel-700">Send your drawing - we will plan the right manufacturing route.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-steel-50 py-16 md:py-24">
+    <div class="container-site">
+      <div data-reveal class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Products</p>
+          <h2 class="mt-3 text-4xl md:text-5xl">Clutch pins, bushes, shafts, levers &amp; custom turned parts</h2>
+          <p class="mt-4 text-steel-700">
+            Custom components manufactured to customer drawing and specification, organised by component family.
+          </p>
+        </div>
+        <a href="/products/" class="btn-outline shrink-0">View all products</a>
+      </div>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {products.slice(0, 6).map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24">
+    <div class="container-site grid items-center gap-12 lg:grid-cols-2">
+      <div data-reveal="left">
+        <p class="eyebrow">Why Antrrow</p>
+        <h2 class="mt-3 text-4xl md:text-5xl">A machining partner that starts with your drawing</h2>
+        <p class="mt-4 text-steel-700">
+          With {site.experienceYears} years of experience, our team led by General Manager{' '}
+          <strong class="text-steel-900">{site.generalManager.name}</strong> manufactures components against agreed
+          drawings, samples, dimensions and material requirements - subject to a clear capability review.
+        </p>
+        <ul class="mt-8 grid gap-6 sm:grid-cols-2" data-stagger>
+          {reasons.map((r) => (
+            <li>
+              <span class="flex size-11 items-center justify-center rounded-lg bg-brand-navy text-white transition-all duration-500 hover:rotate-6 hover:bg-brand-red">
+                <Icon name={r.icon} class="size-6" />
+              </span>
+              <h3 class="mt-3 text-xl">{r.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-steel-700">{r.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="relative" data-reveal="right">
+        <Image
+          src={inspection}
+          alt="Measuring a turned steel pin with a micrometer during dimensional inspection"
+          widths={[480, 800, 1024]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          class="aspect-4/3 w-full rounded-2xl object-cover shadow-2xl"
+        />
+        <div class="absolute -bottom-6 left-6 rounded-xl bg-brand-red px-6 py-4 text-white shadow-xl">
+          <p class="font-display text-4xl font-bold">{site.experienceYears} years</p>
+          <p class="text-sm text-white/90">of machining experience</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-steel-50 py-16 md:py-24">
+    <div class="container-site">
+      <div data-reveal class="max-w-2xl">
+        <p class="eyebrow">How we work</p>
+        <h2 class="mt-3 text-4xl md:text-5xl">From drawing review to dispatch</h2>
+      </div>
+      <div class="mt-10"><ProcessTimeline compact /></div>
+      <a href="/quality-process/" class="mt-8 inline-flex items-center gap-2 font-semibold text-brand-red">
+        See our full quality &amp; process approach <Icon name="arrow" class="size-4" />
+      </a>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24">
+    <div class="container-site">
+      <div data-reveal class="max-w-2xl">
+        <p class="eyebrow">Customer work</p>
+        <h2 class="mt-3 text-4xl md:text-5xl">Components we have made for our customers</h2>
+        <p class="mt-4 text-steel-700">
+          We manufacture components against customer-approved drawings and specifications for industrial and
+          automotive supply chains.
+        </p>
+      </div>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {customers.map((c) => (
+          <li class="rounded-xl border border-steel-200 p-6 transition-all duration-500 ease-(--ease-out-expo) hover:-translate-y-1 hover:border-brand-navy/30 hover:shadow-lg">
+            <p class="font-display text-xl font-bold text-brand-navy-900">{c.name}</p>
+            <p class="mt-1 text-xs font-semibold tracking-wide text-brand-red uppercase">{c.sector}</p>
+            <p class="mt-3 text-sm text-steel-700">{c.parts.join(', ')}</p>
+          </li>
+        ))}
+      </ul>
+      <a href="/industries-customers/" class="mt-8 inline-flex items-center gap-2 font-semibold text-brand-red">
+        Industries we serve <Icon name="arrow" class="size-4" />
+      </a>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} title="Questions about Antrrow Auto Parts" />
+
+  <section class="py-16 md:py-24">
+    <div class="container-site grid gap-12 lg:grid-cols-5">
+      <div data-reveal="left" class="lg:col-span-2">
+        <p class="eyebrow">Get in touch</p>
+        <h2 class="mt-3 text-4xl">Discuss a component requirement</h2>
+        <p class="mt-4 text-steel-700">
+          Tell us what you need. For detailed requirements with quantities and drawings, use our{' '}
+          <a href="/request-a-quote/" class="font-semibold text-brand-navy underline">Request a Quote</a> form.
+        </p>
+        <ul class="mt-8 space-y-4 text-steel-700">
+          <li class="flex gap-3"><Icon name="phone" class="size-5 text-brand-red" /><a href={`tel:${site.phones.mobile.tel}`} class="hover:text-brand-navy">{site.phones.mobile.display}</a></li>
+          <li class="flex gap-3"><Icon name="mail" class="size-5 text-brand-red" /><a href={`mailto:${site.email}`} class="hover:text-brand-navy">{site.email}</a></li>
+          <li class="flex gap-3"><Icon name="pin" class="size-5 shrink-0 text-brand-red" /><span>{site.address.street}, {site.address.locality}, {site.address.city} - {site.address.postalCode}</span></li>
+        </ul>
+      </div>
+      <div data-reveal="right" class="rounded-2xl border border-steel-200 bg-white p-6 shadow-sm md:p-8 lg:col-span-3">
+        <EnquiryForm id="home-enquiry" />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

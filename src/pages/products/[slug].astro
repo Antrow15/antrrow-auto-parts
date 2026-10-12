@@ -1,0 +1,136 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, getEntries, render, type CollectionEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import Icon from '@/components/Icon.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { site } from '@/data/site';
+import { faqSchema, serviceSchema } from '@/lib/schema';
+
+export const getStaticPaths = (async () => {
+  const products = await getCollection('products');
+  return products.map((product) => ({ params: { slug: product.id }, props: { product } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const { data } = product;
+const { Content } = await render(product);
+const capabilities = await getEntries(data.capabilities);
+const related = (await getCollection('products'))
+  .filter((p) => p.id !== product.id)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+const ogImage = await getImage({ src: data.image, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+
+const path = `/products/${product.id}/`;
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Products', href: '/products/' },
+  { name: data.title, href: path },
+];
+---
+
+<BaseLayout
+  title={data.metaTitle}
+  description={data.description}
+  image={ogImage.src}
+  imageAlt={data.imageAlt}
+  keywords={data.keywords}
+  breadcrumbs={breadcrumbs}
+  schema={[
+    serviceSchema({
+      name: data.title,
+      description: data.description,
+      path,
+      image: ogImage.src,
+      serviceType: 'Custom component manufacturing',
+      offers: data.parts,
+    }),
+    ...(data.faqs.length ? [faqSchema(data.faqs)] : []),
+  ]}
+>
+  <PageHeader eyebrow="Products" title={data.h1} lead={data.summary} breadcrumbs={breadcrumbs}>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/request-a-quote/" class="btn-primary">Request a Quote <Icon name="arrow" class="size-4" /></a>
+      <a href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(`Hello, I have a requirement for ${data.title}.`)}`} target="_blank" rel="noopener" class="btn-ghost-light">
+        <Icon name="whatsapp" class="size-5" /> WhatsApp us
+      </a>
+    </div>
+  </PageHeader>
+
+  <section class="py-16 md:py-20">
+    <div class="container-site grid gap-12 lg:grid-cols-3" data-stagger="150">
+      <div class="lg:col-span-2">
+        <Image
+          src={data.image}
+          alt={data.imageAlt}
+          widths={[640, 960, 1280]}
+          sizes="(min-width: 1024px) 66vw, 100vw"
+          loading="eager"
+          class="aspect-16/10 w-full rounded-2xl object-cover"
+        />
+        <div class="prose-site mt-10">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+        <div class="rounded-xl border border-steel-200 p-6">
+          <h2 class="text-2xl">Parts in this family</h2>
+          <ul class="mt-4 space-y-2.5">
+            {data.parts.map((part) => (
+              <li class="flex gap-2.5 text-steel-700"><Icon name="check" class="mt-0.5 size-5 shrink-0 text-brand-red" />{part}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-steel-200 p-6">
+          <h2 class="text-2xl">Typical process route</h2>
+          <ol class="mt-4 space-y-3">
+            {data.route.map((step, i) => (
+              <li class="flex items-start gap-3 text-steel-700">
+                <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-brand-navy text-xs font-bold text-white">{i + 1}</span>
+                <span class="pt-0.5">{step}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="mt-4 text-xs text-steel-500">The final route is confirmed after drawing review.</p>
+        </div>
+
+        <div class="rounded-xl bg-brand-navy-900 p-6 text-white">
+          <h2 class="text-2xl text-white">Related capabilities</h2>
+          <ul class="mt-4 space-y-2">
+            {capabilities.map((c) => (
+              <li>
+                <a href={`/capabilities/${c.id}/`} class="flex items-center justify-between rounded-md bg-white/5 px-4 py-3 text-sm font-medium hover:bg-white/10">
+                  {c.data.title} <Icon name="arrow" class="size-4 text-brand-red" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <Faq faqs={data.faqs} title={`${data.title} - FAQs`} />
+
+  <section class="py-16 md:py-20">
+    <div class="container-site">
+      <h2 class="text-3xl md:text-4xl">Other component families</h2>
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {related.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={`Need ${data.title.toLowerCase()} made to your drawing?`} />
+</BaseLayout>

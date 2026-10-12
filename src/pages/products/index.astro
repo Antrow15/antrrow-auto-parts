@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import Faq from '@/components/Faq.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import hero from '@/assets/images/prod-pins-dowels.jpg';
+import { faqSchema, itemListSchema } from '@/lib/schema';
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+
+const breadcrumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Products', href: '/products/' },
+];
+
+const faqs = [
+  {
+    q: 'Do you sell standard catalogue parts?',
+    a: 'No. We manufacture custom components to customer drawings, samples and specifications. The families on this page show the type of parts we make.',
+  },
+  {
+    q: 'Can you supply branded or OEM parts?',
+    a: 'We do not sell branded genuine parts. We manufacture components against customer-approved drawings for industrial and automotive supply chains.',
+  },
+  {
+    q: 'Which materials do you machine?',
+    a: 'Material follows your drawing and engineering approval. Mention the material and grade in your enquiry and we will confirm suitability for the part.',
+  },
+];
+---
+
+<BaseLayout
+  title="Products - Clutch Pins, Bushes, Shafts, Levers & Turned Parts"
+  description="Custom components made to drawing in Chennai: pins, bushes, sleeves, rods, shafts, levers, brackets, special bolts, rollers and piston rods. Request a quote."
+  keywords={['turned components Chennai', 'clutch pins', 'bushes', 'shafts', 'levers', 'special bolts', 'piston rods']}
+  breadcrumbs={breadcrumbs}
+  pageType="CollectionPage"
+  schema={[
+    itemListSchema('Antrrow Auto Parts component families', products.map((p) => ({ name: p.data.title, href: `/products/${p.id}/` }))),
+    faqSchema(faqs),
+  ]}
+>
+  <PageHeader
+    eyebrow="Products"
+    title="Custom Turned Components Made to Your Drawing"
+    lead="Pins, bushes, rods, shafts, levers, brackets, bolts and more - manufactured in Padi, Chennai against customer drawings, samples and specifications."
+    breadcrumbs={breadcrumbs}
+    image={hero}
+  />
+
+  <section class="py-16 md:py-24">
+    <div class="container-site">
+      <h2 class="sr-only">Component families</h2>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {products.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} title="Questions about our products" />
+  <CtaBand />
+</BaseLayout>

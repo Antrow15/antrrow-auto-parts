@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import Icon from './Icon.astro';
+import { site, fullAddress } from '@/data/site';
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const capabilities = (await getCollection('capabilities')).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-brand-navy-900 text-white/75">
+  <div class="container-site grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <a href="/" class="flex items-center gap-3">
+        <span class="rounded-lg bg-white p-1.5">
+          <Image src={logo} alt="Antrrow Auto Parts logo" width={44} height={44} class="size-11 object-contain" />
+        </span>
+        <span class="font-display text-xl font-bold tracking-wide text-white uppercase">Antrrow Auto Parts</span>
+      </a>
+      <p class="mt-4 text-sm leading-relaxed">
+        {site.tagline}. Custom metal components made to customer drawings for automotive and industrial
+        supply chains, from Padi, Chennai.
+      </p>
+      <p class="mt-4 text-sm">
+        <span class="font-semibold text-white">{site.generalManager.name}</span>, {site.generalManager.role}
+      </p>
+    </div>
+
+    <div>
+      <h2 class="font-display text-lg tracking-wide text-white uppercase">Products</h2>
+      <ul class="mt-4 space-y-2 text-sm">
+        {
+          products.map((p) => (
+            <li>
+              <a href={`/products/${p.id}/`} class="hover:text-white">{p.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="font-display text-lg tracking-wide text-white uppercase">Capabilities</h2>
+      <ul class="mt-4 space-y-2 text-sm">
+        {
+          capabilities.map((c) => (
+            <li>
+              <a href={`/capabilities/${c.id}/`} class="hover:text-white">{c.data.title}</a>
+            </li>
+          ))
+        }
+        <li><a href="/quality-process/" class="hover:text-white">Quality &amp; Process</a></li>
+        <li><a href="/industries-customers/" class="hover:text-white">Industries &amp; Customers</a></li>
+        <li><a href="/about/" class="hover:text-white">About Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="font-display text-lg tracking-wide text-white uppercase">Contact</h2>
+      <address class="mt-4 space-y-3 text-sm not-italic">
+        <p class="flex gap-3">
+          <Icon name="pin" class="mt-0.5 size-5 shrink-0 text-brand-red" />
+          <span>{fullAddress}</span>
+        </p>
+        <p class="flex gap-3">
+          <Icon name="phone" class="mt-0.5 size-5 shrink-0 text-brand-red" />
+          <span>
+            <a href={`tel:${site.phones.mobile.tel}`} class="hover:text-white">{site.phones.mobile.display}</a><br />
+            <a href={`tel:${site.phones.landline.tel}`} class="hover:text-white">{site.phones.landline.display}</a>
+          </span>
+        </p>
+        <p class="flex gap-3">
+          <Icon name="mail" class="mt-0.5 size-5 shrink-0 text-brand-red" />
+          <a href={`mailto:${site.email}`} class="break-all hover:text-white">{site.email}</a>
+        </p>
+        <p class="flex gap-3">
+          <Icon name="clock" class="mt-0.5 size-5 shrink-0 text-brand-red" />
+          <span>{site.hours.display}</span>
+        </p>
+      </address>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-site flex flex-col gap-2 py-6 text-xs text-white/60 md:flex-row md:items-center md:justify-between">
+      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+      <p>
+        GSTIN: {site.gstin}{site.msme && ' · MSME registered'} ·{' '}
+        <a href="/privacy/" class="hover:text-white">Privacy</a> ·{' '}
+        <a href="/sitemap-index.xml" class="hover:text-white">Sitemap</a>
+      </p>
+    </div>
+  </div>
+</footer>

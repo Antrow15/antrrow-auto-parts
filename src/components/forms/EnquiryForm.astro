@@ -1,0 +1,59 @@
+---
+import Field from './Field.astro';
+import FormSuccess from './FormSuccess.astro';
+import { componentCategories } from '@/data/site';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'enquiry' } = Astro.props;
+---
+
+<div data-form-wrapper>
+  <form data-enquiry-form data-kind="enquiry" class="grid gap-5 sm:grid-cols-2" aria-label="Contact enquiry form">
+    <Field formId={id} name="name" label="Your name" required autocomplete="name" maxlength={80} />
+    <Field formId={id} name="company" label="Company" autocomplete="organization" maxlength={120} />
+    <Field formId={id} name="email" label="Email" type="email" autocomplete="email" inputmode="email" maxlength={120} hint="Email or phone - at least one is required." />
+    <Field formId={id} name="phone" label="Phone" type="tel" autocomplete="tel" inputmode="tel" maxlength={18} />
+    <Field formId={id} name="category" label="Component category" as="select" options={componentCategories} class="sm:col-span-2" />
+    <Field
+      formId={id}
+      name="message"
+      label="Message"
+      as="textarea"
+      required
+      minlength={10}
+      maxlength={2000}
+      rows={5}
+      placeholder="Tell us about the component, material and quantity."
+      class="sm:col-span-2"
+    />
+
+    <div data-honeypot class="absolute -left-[9999px]" aria-hidden="true">
+      <label for={`${id}-website`}>Website</label>
+      <input id={`${id}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="sm:col-span-2">
+      <label class="flex items-start gap-3 text-sm text-steel-700">
+        <input type="checkbox" name="consent" required class="mt-1 size-4 accent-brand-navy" aria-describedby={`${id}-consent-error`} />
+        <span>
+          I agree that Antrrow Auto Parts may use these details to respond to my enquiry, as described in the{' '}
+          <a href="/privacy/" class="font-medium text-brand-navy underline">privacy notice</a>.
+        </span>
+      </label>
+      <p id={`${id}-consent-error`} class="field-error" data-error-for="consent" hidden></p>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center">
+      <button type="submit" class="btn-primary disabled:opacity-60">Send Enquiry</button>
+      <p data-form-status class="text-sm font-medium text-brand-red-700" aria-live="polite"></p>
+    </div>
+  </form>
+  <FormSuccess />
+</div>
+
+<script>
+  import '@/scripts/enquiry-form';
+</script>
